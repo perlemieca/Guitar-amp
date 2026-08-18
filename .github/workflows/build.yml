@@ -1,0 +1,54 @@
+name: Build APK
+
+on:
+  push:
+    branches: [ main, master ]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout codice
+        uses: actions/checkout@v4
+
+      - name: Imposta JDK 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+
+      - name: Imposta Android SDK
+        uses: android-actions/setup-android@v3
+
+      - name: Installa NDK e CMake
+        run: |
+          sdkmanager --install "ndk;26.1.10909125" "cmake;3.22.1"
+
+      - name: Imposta Gradle
+        uses: gradle/actions/setup-gradle@v4
+
+      - name: Compila APK debug (installabile subito)
+        run: gradle assembleDebug --no-daemon --stacktrace
+
+      - name: Carica APK come artefatto del workflow
+        uses: actions/upload-artifact@v4
+        with:
+          name: GuitarAmpApp-debug
+          path: app/build/outputs/apk/debug/app-debug.apk
+
+      - name: Pubblica APK come Release scaricabile
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: build-${{ github.run_number }}
+          name: GuitarAmpApp build #${{ github.run_number }}
+          files: app/build/outputs/apk/debug/app-debug.apk
+          body: |
+            APK compilato automaticamente da GitHub Actions.
+            Scarica "app-debug.apk" qui sotto, aprilo sul telefono e installalo
+            (potrebbe servire abilitare "Installa da sorgenti sconosciute").
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
