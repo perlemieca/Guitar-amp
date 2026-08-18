@@ -1,0 +1,11 @@
+<resources>
+    <string name="app_name">Guitar Amp Engine</string>
+    <string name="start">Avvia</string>
+    <string name="stop">Ferma</string>
+    <string name="status_running">Motore attivo — collega la chitarra e suona</string>
+    <string name="status_stopped">Motore fermo</string>
+    <string name="gain">Gain</string>
+    <string name="tone">Tone</string>
+    <string name="volume">Volume</string>
+    <string name="hint">Per una latenza minima usa un\'interfaccia audio USB collegata via OTG, non il microfono interno del telefono.</string>
+</resources>
